@@ -106,52 +106,17 @@ export default {
       currentPage: 1,
       todos: [
         {
-          id: 1,
+          id: 14,
           done: false,
           description: "Ajouter une todo avec Vue",
         },
         {
-          id: 2,
+          id: 13,
           done: true,
           description: "Design de ma Todo",
         },
         {
-          id: 3,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 4,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 5,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 6,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 7,
-          done: true,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 8,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 9,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 10,
+          id: 12,
           done: false,
           description: "Design de ma Todo",
         },
@@ -161,17 +126,52 @@ export default {
           description: "Design de ma Todo",
         },
         {
-          id: 12,
+          id: 10,
           done: false,
           description: "Design de ma Todo",
         },
         {
-          id: 13,
+          id: 9,
           done: false,
           description: "Design de ma Todo",
         },
         {
-          id: 14,
+          id: 8,
+          done: true,
+          description: "Design de ma Todo",
+        },
+        {
+          id: 7,
+          done: false,
+          description: "Design de ma Todo",
+        },
+        {
+          id: 6,
+          done: false,
+          description: "Design de ma Todo",
+        },
+        {
+          id: 5,
+          done: false,
+          description: "Design de ma Todo",
+        },
+        {
+          id: 4,
+          done: false,
+          description: "Design de ma Todo",
+        },
+        {
+          id: 3,
+          done: false,
+          description: "Design de ma Todo",
+        },
+        {
+          id: 2,
+          done: false,
+          description: "Design de ma Todo",
+        },
+        {
+          id: 1,
           done: true,
           description: "Design de ma Todo",
         },
@@ -201,17 +201,20 @@ export default {
     addTodo() {
       if (this.description) {
         let newTodo = {
-          id: this.todos[this.todos.length - 1].id + 1,
+          id: this.todos[0].id + 1,
           done: false,
           description: this.description,
         };
         this.description = "";
-        this.todos.push(newTodo);
+        this.todos.unshift(newTodo);
       }
     },
 
     removeTodo(id) {
-      this.todos = this.todos.filter((element) => element.id !== id);
+      this.todos.splice(
+        this.todos.findIndex((todo) => todo.id === id),
+        1
+      );
     },
 
     numberOfPage() {
