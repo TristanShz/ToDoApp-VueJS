@@ -1,0 +1,14 @@
+#pagination span {
+  margin: 15px 10px;
+  font-weight: bold;
+}
+
+#pagination span:hover {
+  color: #3b82f6;
+  cursor: pointer;
+}
+
+.currentPage {
+  color: #3b82f6;
+  text-decoration: underline;
+}
