@@ -7,87 +7,19 @@
         >
           <div class="mb-4">
             <h1 class="text-3xl text-gray-900">Ma Todo</h1>
-            <div class="flex mt-4">
-              <input
-                class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-gray-700"
-                placeholder="Add Todo"
-                v-model="description"
-                @keyup.enter="addTodo()"
-              />
-              <button
-                class="flex p-2 border-2 rounded text-blue-500 border-blue-500 hover:text-white hover:bg-blue-500"
-                @click="addTodo()"
-              >
-                Ajouter
-              </button>
-            </div>
           </div>
-          <div class="mb-5">
-            <div class="mb-2">{{ pourcentageDone }}% réalisé</div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-              <div
-                class="bg-blue-600 h-2.5 rounded-full"
-                :style="{
-                  width: `${pourcentageDone}%`,
-                }"
-              ></div>
-            </div>
-          </div>
-          <div>
-            <div
-              v-for="todo in todoByPages"
-              :key="todo.id"
-              class="flex mb-4 items-center"
-            >
-              <p
-                class="w-full text-gray-900"
-                :class="{ 'line-through': todo.done }"
-              >
-                {{ todo.description }}
-              </p>
-              <button
-                class="flex p-2 ml-4 mr-2 border-2 rounded hover:text-white"
-                :class="[
-                  todo.done
-                    ? 'text-green-500 border-green-500 hover:bg-green-500'
-                    : 'text-gray-500 border-gray-500 hover:bg-gray-500',
-                ]"
-                @click="todo.done = !todo.done"
-              >
-                {{ todo.done ? "Fait" : "Pas fait" }}
-              </button>
-              <button
-                class="flex p-2 ml-2 border-2 rounded text-red-500 border-red-500 hover:text-white hover:bg-red-500"
-                @click="removeTodo(todo.id)"
-              >
-                Supprimer
-              </button>
-            </div>
-          </div>
-          <div class="flex items-center justify-center" id="pagination">
-            <span v-show="currentPage !== 1" @click="currentPage = 1">
-              <font-awesome-icon icon="fa-solid fa-angles-left"
-            /></span>
-            <span v-show="currentPage !== 1" @click="currentPage -= 1">
-              <font-awesome-icon icon="fa-solid fa-angle-left"
-            /></span>
-            <span
-              v-for="number in numberOfPage()"
-              :key="number"
-              @click="currentPage = number + 1"
-              :class="{ currentPage: number + 1 == currentPage }"
-              >{{ number + 1 }}
-            </span>
-            <span v-show="currentPage !== maxPage" @click="currentPage += 1">
-              <font-awesome-icon icon="fa-solid fa-angle-right"
-            /></span>
-            <span
-              v-show="currentPage !== maxPage"
-              @click="currentPage = maxPage"
-            >
-              <font-awesome-icon icon="fa-solid fa-angles-right"
-            /></span>
-          </div>
+          <todo-input @onAddTodo="addTodo" />
+          <todo-progressbar v-bind:pourcentageDone="pourcentageDone" />
+          <todo-card
+            v-bind:todoByPages="todoByPages"
+            @onDeleteTodo="removeTodo"
+          />
+          <todo-pagination
+            v-bind:pageSize="pageSize"
+            v-bind:currentPage="currentPage"
+            v-bind:maxPage="maxPage"
+            @onPageSet="setCurrentPage"
+          />
         </div>
       </div>
     </div>
@@ -95,31 +27,23 @@
 </template>
 
 <script>
-const PAGE_SIZE = 5;
-
+import TodoInput from "@/components/TodoInput.vue";
+import TodoPagination from "@/components/TodoPagination.vue";
+import TodoCard from "@/components/TodoCard.vue";
+import TodoProgressbar from "@/components/TodoProgressbar.vue";
 export default {
   name: "App",
+  components: {
+    TodoInput,
+    TodoPagination,
+    TodoCard,
+    TodoProgressbar,
+  },
   data() {
     return {
-      pageSize: PAGE_SIZE,
-      description: "",
+      pageSize: 5,
       currentPage: 1,
       todos: [
-        {
-          id: 14,
-          done: false,
-          description: "Ajouter une todo avec Vue",
-        },
-        {
-          id: 13,
-          done: true,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 12,
-          done: false,
-          description: "Design de ma Todo",
-        },
         {
           id: 11,
           done: false,
@@ -180,11 +104,17 @@ export default {
   },
   computed: {
     pourcentageDone() {
-      let pourcentage = Math.floor(
-        (this.todos.filter((todo) => todo.done).length / this.todos.length) *
-          100
-      );
-      return pourcentage ? pourcentage : 0;
+      if (this.todos.length) {
+        return (
+          Math.floor(
+            (this.todos.filter((todo) => todo.done).length /
+              this.todos.length) *
+              100
+          ) + "%"
+        );
+      } else {
+        return "0%";
+      }
     },
     todoByPages() {
       return this.todos.slice(
@@ -198,14 +128,16 @@ export default {
     },
   },
   methods: {
-    addTodo() {
-      if (this.description) {
+    addTodo(description) {
+      let id;
+      if (this.todos.length) id = this.todos[0].id + 1;
+      else id = 1;
+      if (description) {
         let newTodo = {
-          id: this.todos[0].id + 1,
+          id: id,
           done: false,
-          description: this.description,
+          description: description,
         };
-        this.description = "";
         this.todos.unshift(newTodo);
       }
     },
@@ -217,10 +149,11 @@ export default {
       );
     },
 
-    numberOfPage() {
-      let pageArr = [];
-      for (let i = 0; i < this.maxPage; i++) pageArr.push(i);
-      return pageArr;
+    setCurrentPage(page) {
+      if (page == "max") this.currentPage = this.maxPage;
+      if (page <= 0) this.currentPage = 1;
+      else if (page > this.maxPage) this.currentPage = this.maxPage;
+      else this.currentPage = page;
     },
   },
 };
