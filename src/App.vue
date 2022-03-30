@@ -8,12 +8,15 @@
           <div class="mb-4">
             <h1 class="text-3xl text-gray-900">Ma Todo</h1>
           </div>
-          <todo-input @onAddTodo="addTodo" />
+          <todo-input
+            @onAddTodo="
+              (description) => $store.dispatch('addTodo', description)
+            "
+          />
           <todo-progressbar v-bind:pourcentageDone="pourcentageDone" />
           <todo-card
             :todoByPages="todoByPages"
             :editingId="editingId"
-            @onDeleteTodo="removeTodo"
             @onToggleEditId="toggleEditId"
           />
           <todo-pagination
@@ -45,72 +48,15 @@ export default {
       pageSize: 5,
       currentPage: 1,
       editingId: undefined,
-      todos: [
-        {
-          id: 11,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 10,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 9,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 8,
-          done: true,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 7,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 6,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 5,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 4,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 3,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 2,
-          done: false,
-          description: "Design de ma Todo",
-        },
-        {
-          id: 1,
-          done: true,
-          description: "Design de ma Todo",
-        },
-      ],
     };
   },
   computed: {
     pourcentageDone() {
-      if (this.todos.length) {
+      if (this.$store.state.todos.length) {
         return (
           Math.floor(
-            (this.todos.filter((todo) => todo.done).length /
-              this.todos.length) *
+            (this.$store.state.todos.filter((todo) => todo.done).length /
+              this.$store.state.todos.length) *
               100
           ) + "%"
         );
@@ -119,38 +65,17 @@ export default {
       }
     },
     todoByPages() {
-      return this.todos.slice(
+      return this.$store.state.todos.slice(
         this.pageSize * (this.currentPage - 1),
         this.pageSize * this.currentPage
       );
     },
 
     maxPage() {
-      return Math.ceil(this.todos.length / this.pageSize);
+      return Math.ceil(this.$store.state.todos.length / this.pageSize);
     },
   },
   methods: {
-    addTodo(description) {
-      let id;
-      if (this.todos.length) id = this.todos[0].id + 1;
-      else id = 1;
-      if (description) {
-        let newTodo = {
-          id: id,
-          done: false,
-          description: description,
-        };
-        this.todos.unshift(newTodo);
-      }
-    },
-
-    removeTodo(id) {
-      this.todos.splice(
-        this.todos.findIndex((todo) => todo.id === id),
-        1
-      );
-    },
-
     setCurrentPage(page) {
       if (page <= 0) this.currentPage = 1;
       else if (page > this.maxPage) this.currentPage = this.maxPage;

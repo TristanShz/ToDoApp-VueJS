@@ -43,7 +43,7 @@
       </button>
       <button
         class="flex p-2 ml-2 border-2 rounded text-red-500 border-red-500 hover:text-white hover:bg-red-500"
-        @click="removeTodo(todo.id)"
+        @click="$store.dispatch('removeTodo', todo.id)"
       >
         Supprimer
       </button>
@@ -58,10 +58,6 @@ export default {
   },
 
   methods: {
-    removeTodo(id) {
-      this.$emit("onDeleteTodo", id);
-    },
-
     toggleEditId(id) {
       this.$emit("onToggleEditId", id);
     },
