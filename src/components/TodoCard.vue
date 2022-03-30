@@ -5,9 +5,31 @@
       :key="todo.id"
       class="flex mb-4 items-center"
     >
-      <p class="w-full text-gray-900" :class="{ 'line-through': todo.done }">
+      <div v-if="todo.id === editingId" class="flex">
+        <input
+          v-model="
+            todoByPages.find((_todo) => _todo.id === editingId).description
+          "
+          class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-gray-700"
+        />
+        <button
+          @click="toggleEditId(undefined)"
+          class="flex p-2 ml-2 border-2 rounded text-blue-500 border-blue-500 hover:text-white hover:bg-blue-500"
+        >
+          Valider
+        </button>
+      </div>
+      <p
+        v-else
+        @dblclick="toggleEditId(todo.id)"
+        class="w-full text-gray-900"
+        :class="{ 'line-through': todo.done }"
+      >
         {{ todo.description }}
       </p>
+      <!-- <p class="w-full text-gray-900" :class="{ 'line-through': todo.done }">
+        {{ todo.description }}
+      </p> -->
       <button
         class="flex p-2 ml-4 mr-2 border-2 rounded hover:text-white"
         :class="[
@@ -32,11 +54,16 @@
 export default {
   props: {
     todoByPages: Array,
+    editingId: Number,
   },
 
   methods: {
     removeTodo(id) {
       this.$emit("onDeleteTodo", id);
+    },
+
+    toggleEditId(id) {
+      this.$emit("onToggleEditId", id);
     },
   },
 };

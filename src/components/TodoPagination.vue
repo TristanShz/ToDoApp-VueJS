@@ -14,12 +14,15 @@
       >{{ number }}
     </span>
     <span
-      v-show="currentPage !== maxPage"
+      v-show="currentPage !== maxPage && maxPage"
       @click="setCurrentPage(currentPage + 1)"
     >
       <font-awesome-icon icon="fa-solid fa-angle-right"
     /></span>
-    <span v-show="currentPage !== maxPage" @click="setCurrentPage(max)">
+    <span
+      v-show="currentPage !== maxPage && maxPage"
+      @click="setCurrentPage(maxPage)"
+    >
       <font-awesome-icon icon="fa-solid fa-angles-right"
     /></span>
   </div>
@@ -30,7 +33,6 @@ export default {
     return {};
   },
   props: {
-    pageSize: Number,
     currentPage: Number,
     maxPage: Number,
   },

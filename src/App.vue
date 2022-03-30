@@ -11,13 +11,14 @@
           <todo-input @onAddTodo="addTodo" />
           <todo-progressbar v-bind:pourcentageDone="pourcentageDone" />
           <todo-card
-            v-bind:todoByPages="todoByPages"
+            :todoByPages="todoByPages"
+            :editingId="editingId"
             @onDeleteTodo="removeTodo"
+            @onToggleEditId="toggleEditId"
           />
           <todo-pagination
-            v-bind:pageSize="pageSize"
-            v-bind:currentPage="currentPage"
-            v-bind:maxPage="maxPage"
+            :currentPage="currentPage"
+            :maxPage="maxPage"
             @onPageSet="setCurrentPage"
           />
         </div>
@@ -43,6 +44,7 @@ export default {
     return {
       pageSize: 5,
       currentPage: 1,
+      editingId: undefined,
       todos: [
         {
           id: 11,
@@ -150,10 +152,12 @@ export default {
     },
 
     setCurrentPage(page) {
-      if (page == "max") this.currentPage = this.maxPage;
       if (page <= 0) this.currentPage = 1;
       else if (page > this.maxPage) this.currentPage = this.maxPage;
       else this.currentPage = page;
+    },
+    toggleEditId(todoId) {
+      this.editingId = todoId;
     },
   },
 };
