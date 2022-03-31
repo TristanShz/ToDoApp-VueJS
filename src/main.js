@@ -1,6 +1,8 @@
 import Vue from "vue";
 import App from "./App.vue";
 import store from "./store/index.js";
+import Routes from "./routes/index.js";
+import VueRouter from "vue-router";
 
 /* import the fontawesome core */
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -27,7 +29,15 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+  mode: "history",
+  routes: Routes,
+});
+
 new Vue({
   store,
   render: (h) => h(App),
+  router,
 }).$mount("#app");
