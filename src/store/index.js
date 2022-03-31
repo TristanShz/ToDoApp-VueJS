@@ -63,19 +63,15 @@ const store = new Vuex.Store({
       },
     ],
   },
+  getters: {
+    todoId(state) {
+      if (state.todos.length) return state.todos[0].id + 1;
+      else return 1;
+    },
+  },
   mutations: {
-    addTodo(state, description) {
-      let id;
-      if (state.todos.length) id = state.todos[0].id + 1;
-      else id = 1;
-      if (description) {
-        let newTodo = {
-          id: id,
-          done: false,
-          description: description,
-        };
-        state.todos.unshift(newTodo);
-      }
+    addTodo(state, newTodo) {
+      state.todos.unshift(newTodo);
     },
 
     removeTodo(state, id) {
@@ -88,7 +84,13 @@ const store = new Vuex.Store({
 
   actions: {
     addTodo(context, description) {
-      context.commit("addTodo", description);
+      if (description) {
+        context.commit("addTodo", {
+          id: this.getters.todoId,
+          done: false,
+          description: description,
+        });
+      }
     },
 
     removeTodo(context, id) {
