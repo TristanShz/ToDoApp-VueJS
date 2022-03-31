@@ -5,38 +5,16 @@
       :key="todo.id"
       class="flex mb-4 items-center"
     >
-      <div v-if="todo.id === $store.state.editingId" class="flex">
-        <input
-          v-model="
-            $store.getters.todoByPages.find(
-              (_todo) => _todo.id === $store.state.editingId
-            ).description
-          "
-          class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-gray-700"
-        />
-        <button
-          @click="
-            () => {
-              $store.dispatch('toggleEditId', undefined);
-              $store.dispatch('saveTodo', todo.id);
-            }
-          "
-          class="flex p-2 ml-2 border-2 rounded text-blue-500 border-blue-500 hover:text-white hover:bg-blue-500"
-        >
-          Valider
-        </button>
-      </div>
-      <p
-        v-else
-        @dblclick="$store.dispatch('toggleEditId', todo.id)"
-        class="w-full text-gray-900"
-        :class="{ 'line-through': todo.done }"
-      >
+      <p class="w-full text-gray-900" :class="{ 'line-through': todo.done }">
         {{ todo.description }}
       </p>
-      <!-- <p class="w-full text-gray-900" :class="{ 'line-through': todo.done }">
-        {{ todo.description }}
-      </p> -->
+      <router-link :to="{ name: 'edit', params: { id: todo.id } }"
+        ><button
+          class="flex p-2 ml-2 border-2 rounded text-blue-500 border-blue-500 hover:text-white hover:bg-blue-500"
+        >
+          Edit
+        </button></router-link
+      >
       <button
         class="flex p-2 ml-4 mr-2 border-2 rounded hover:text-white"
         :class="[

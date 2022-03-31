@@ -8,7 +8,7 @@ const store = new Vuex.Store({
     todos: [],
     pageSize: 5,
     currentPage: 1,
-    editingId: undefined,
+    description: "",
   },
   getters: {
     todoId(state) {
@@ -46,12 +46,13 @@ const store = new Vuex.Store({
     setStates(state, todos) {
       state.todos = todos;
     },
+    editTodo(state, todo) {
+      todo.description = this.state.description;
+      this.state.description = "";
+    },
     addTodo(state, newTodo) {
       state.todos.unshift(newTodo);
       state.description = "";
-    },
-    toggleEditId(state, id) {
-      state.editingId = id;
     },
 
     removeTodo(state, todo) {
@@ -76,6 +77,10 @@ const store = new Vuex.Store({
     setStates(context) {
       context.commit("setStates", JSON.parse(localStorage.getItem("todos")));
     },
+    editTodo(context, id) {
+      context.commit("editTodo", this.getters.getTodoById(id));
+      context.dispatch("saveTodo");
+    },
     addTodo(context, description) {
       if (description) {
         context.commit("addTodo", {
@@ -86,9 +91,6 @@ const store = new Vuex.Store({
 
         context.dispatch("saveTodo");
       }
-    },
-    toggleEditId(context, id) {
-      context.commit("toggleEditId", id);
     },
     removeTodo(context, id) {
       context.commit("removeTodo", this.getters.getTodoById(id));
