@@ -43,9 +43,11 @@ const store = new Vuex.Store({
     },
   },
   mutations: {
+    setStates(state, todos) {
+      state.todos = todos;
+    },
     addTodo(state, newTodo) {
       state.todos.unshift(newTodo);
-      localStorage.setItem(newTodo.id, JSON.stringify(newTodo));
       state.description = "";
     },
     toggleEditId(state, id) {
@@ -57,11 +59,8 @@ const store = new Vuex.Store({
         state.todos.findIndex((findTodo) => findTodo.id === todo.id),
         1
       );
-      localStorage.removeItem(todo.id);
     },
-    saveTodo(state, todo) {
-      localStorage.setItem(todo.id, JSON.stringify(todo));
-    },
+
     doneTodo(state, todo) {
       todo.done = !todo.done;
     },
@@ -74,6 +73,9 @@ const store = new Vuex.Store({
   },
 
   actions: {
+    setStates(context) {
+      context.commit("setStates", JSON.parse(localStorage.getItem("todos")));
+    },
     addTodo(context, description) {
       if (description) {
         context.commit("addTodo", {
@@ -81,6 +83,8 @@ const store = new Vuex.Store({
           done: false,
           description: description,
         });
+
+        context.dispatch("saveTodo");
       }
     },
     toggleEditId(context, id) {
@@ -88,14 +92,16 @@ const store = new Vuex.Store({
     },
     removeTodo(context, id) {
       context.commit("removeTodo", this.getters.getTodoById(id));
+      context.dispatch("saveTodo");
     },
 
     doneTodo(context, id) {
       context.commit("doneTodo", this.getters.getTodoById(id));
+      context.dispatch("saveTodo");
     },
 
-    saveTodo(context, id) {
-      context.commit("saveTodo", this.getters.getTodoById(id));
+    saveTodo({ state }) {
+      localStorage.setItem("todos", JSON.stringify(state.todos));
     },
 
     getTodoById(context, id) {

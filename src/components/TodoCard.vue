@@ -47,7 +47,6 @@
         @click="
           () => {
             $store.dispatch('doneTodo', todo.id);
-            $store.dispatch('saveTodo', todo.id);
           }
         "
       >
