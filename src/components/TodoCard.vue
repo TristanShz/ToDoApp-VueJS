@@ -1,21 +1,23 @@
 <template lang="">
   <div>
     <div
-      v-for="todo in todoByPages"
+      v-for="todo in $store.getters.todoByPages"
       :key="todo.id"
       class="flex mb-4 items-center"
     >
-      <div v-if="todo.id === editingId" class="flex">
+      <div v-if="todo.id === $store.state.editingId" class="flex">
         <input
           v-model="
-            todoByPages.find((_todo) => _todo.id === editingId).description
+            $store.getters.todoByPages.find(
+              (_todo) => _todo.id === $store.state.editingId
+            ).description
           "
           class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-gray-700"
         />
         <button
           @click="
             () => {
-              toggleEditId(undefined);
+              $store.dispatch('toggleEditId', undefined);
               $store.dispatch('saveTodo', todo.id);
             }
           "
@@ -26,7 +28,7 @@
       </div>
       <p
         v-else
-        @dblclick="toggleEditId(todo.id)"
+        @dblclick="$store.dispatch('toggleEditId', todo.id)"
         class="w-full text-gray-900"
         :class="{ 'line-through': todo.done }"
       >
@@ -60,18 +62,3 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  props: {
-    todoByPages: Array,
-    editingId: Number,
-  },
-
-  methods: {
-    toggleEditId(id) {
-      this.$emit("onToggleEditId", id);
-    },
-  },
-};
-</script>
-<style lang=""></style>

@@ -6,6 +6,9 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     todos: [],
+    pageSize: 5,
+    currentPage: 1,
+    editingId: undefined,
   },
   getters: {
     todoId(state) {
@@ -15,11 +18,38 @@ const store = new Vuex.Store({
     getTodoById: (state) => (id) => {
       return state.todos.find((todo) => todo.id === id);
     },
+    maxPage(state) {
+      return Math.ceil(state.todos.length / state.pageSize);
+    },
+
+    todoByPages(state) {
+      return state.todos.slice(
+        state.pageSize * (state.currentPage - 1),
+        state.pageSize * state.currentPage
+      );
+    },
+    pourcentageDone(state) {
+      if (state.todos.length) {
+        return (
+          Math.floor(
+            (state.todos.filter((todo) => todo.done).length /
+              state.todos.length) *
+              100
+          ) + "%"
+        );
+      } else {
+        return "0%";
+      }
+    },
   },
   mutations: {
     addTodo(state, newTodo) {
       state.todos.unshift(newTodo);
       localStorage.setItem(newTodo.id, JSON.stringify(newTodo));
+      state.description = "";
+    },
+    toggleEditId(state, id) {
+      state.editingId = id;
     },
 
     removeTodo(state, todo) {
@@ -33,8 +63,13 @@ const store = new Vuex.Store({
       localStorage.setItem(todo.id, JSON.stringify(todo));
     },
     doneTodo(state, todo) {
-      console.log(todo);
       todo.done = !todo.done;
+    },
+
+    setCurrentPage(state, page) {
+      if (page <= 0) state.currentPage = 1;
+      else if (page > state.maxPage) state.currentPage = state.maxPage;
+      else state.currentPage = page;
     },
   },
 
@@ -48,7 +83,9 @@ const store = new Vuex.Store({
         });
       }
     },
-
+    toggleEditId(context, id) {
+      context.commit("toggleEditId", id);
+    },
     removeTodo(context, id) {
       context.commit("removeTodo", this.getters.getTodoById(id));
     },
@@ -63,6 +100,10 @@ const store = new Vuex.Store({
 
     getTodoById(context, id) {
       context.commit("getTodoById", this.getters.getTodoById(id));
+    },
+
+    setCurrentPage(context, page) {
+      context.commit("setCurrentPage", page);
     },
   },
 });
