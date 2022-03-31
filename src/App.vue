@@ -85,5 +85,24 @@ export default {
       this.editingId = todoId;
     },
   },
+  mounted: function () {
+    this.$nextTick(function () {
+      let id = 1;
+      while (localStorage.getItem(id)) {
+        try {
+          let newTodo = JSON.parse(localStorage.getItem(id));
+          this.$store.state.todos.unshift({
+            id: newTodo.id,
+            done: newTodo.done,
+            description: newTodo.description,
+          });
+        } catch (e) {
+          localStorage.removeItem(id);
+        }
+
+        id++;
+      }
+    });
+  },
 };
 </script>

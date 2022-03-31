@@ -5,80 +5,36 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    todos: [
-      {
-        id: 11,
-        done: false,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 10,
-        done: false,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 9,
-        done: false,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 8,
-        done: true,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 7,
-        done: false,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 6,
-        done: false,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 5,
-        done: false,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 4,
-        done: false,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 3,
-        done: false,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 2,
-        done: false,
-        description: "Design de ma Todo",
-      },
-      {
-        id: 1,
-        done: true,
-        description: "Design de ma Todo",
-      },
-    ],
+    todos: [],
   },
   getters: {
     todoId(state) {
       if (state.todos.length) return state.todos[0].id + 1;
       else return 1;
     },
+    getTodoById: (state) => (id) => {
+      return state.todos.find((todo) => todo.id === id);
+    },
   },
   mutations: {
     addTodo(state, newTodo) {
       state.todos.unshift(newTodo);
+      localStorage.setItem(newTodo.id, JSON.stringify(newTodo));
     },
 
-    removeTodo(state, id) {
+    removeTodo(state, todo) {
       state.todos.splice(
-        state.todos.findIndex((todo) => todo.id === id),
+        state.todos.findIndex((findTodo) => findTodo.id === todo.id),
         1
       );
+      localStorage.removeItem(todo.id);
+    },
+    saveTodo(state, todo) {
+      localStorage.setItem(todo.id, JSON.stringify(todo));
+    },
+    doneTodo(state, todo) {
+      console.log(todo);
+      todo.done = !todo.done;
     },
   },
 
@@ -94,7 +50,19 @@ const store = new Vuex.Store({
     },
 
     removeTodo(context, id) {
-      context.commit("removeTodo", id);
+      context.commit("removeTodo", this.getters.getTodoById(id));
+    },
+
+    doneTodo(context, id) {
+      context.commit("doneTodo", this.getters.getTodoById(id));
+    },
+
+    saveTodo(context, id) {
+      context.commit("saveTodo", this.getters.getTodoById(id));
+    },
+
+    getTodoById(context, id) {
+      context.commit("getTodoById", this.getters.getTodoById(id));
     },
   },
 });

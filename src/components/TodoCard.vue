@@ -13,7 +13,12 @@
           class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-gray-700"
         />
         <button
-          @click="toggleEditId(undefined)"
+          @click="
+            () => {
+              toggleEditId(undefined);
+              $store.dispatch('saveTodo', todo.id);
+            }
+          "
           class="flex p-2 ml-2 border-2 rounded text-blue-500 border-blue-500 hover:text-white hover:bg-blue-500"
         >
           Valider
@@ -37,7 +42,12 @@
             ? 'text-green-500 border-green-500 hover:bg-green-500'
             : 'text-gray-500 border-gray-500 hover:bg-gray-500',
         ]"
-        @click="todo.done = !todo.done"
+        @click="
+          () => {
+            $store.dispatch('doneTodo', todo.id);
+            $store.dispatch('saveTodo', todo.id);
+          }
+        "
       >
         {{ todo.done ? "Fait" : "Pas fait" }}
       </button>
