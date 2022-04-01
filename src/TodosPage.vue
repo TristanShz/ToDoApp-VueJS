@@ -32,7 +32,23 @@ export default {
     TodoProgressbar,
   },
   created() {
-    this.$store.dispatch("setStates");
+    const myHeaders = new Headers();
+    const myInit = {
+      method: "GET",
+      headers: myHeaders,
+      mode: "cors",
+      cache: "default",
+    };
+    let newTodo = [];
+    fetch("http://localhost:3000/api/v1/todos", myInit)
+      .then(function (todosList) {
+        return todosList.json();
+      })
+      .then((todosList) => {
+        newTodo = todosList;
+        this.$store.dispatch("setStates", todosList);
+        console.log(newTodo);
+      });
   },
 };
 </script>

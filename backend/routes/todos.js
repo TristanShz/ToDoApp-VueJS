@@ -9,11 +9,11 @@ const verifyParams = require("../middleware/verifyParams");
 const todoCtrl = require("../controllers/todos");
 
 //route/todos/
-router.get("/", todoCtrl.list);
+router.get("/", verifyParams, todoCtrl.list);
 
 //route /todos/:id
 //le router executera la requête dans l'odre des middlewares,
 //pour finir avec le contrôleur de la requête
-router.get(":/id", verifyParams, todoCtrl.getOneItem);
+// router.get("/:id", verifyParams, todoCtrl.getOneItem);
 
 module.exports = router;

@@ -22,12 +22,12 @@ mongoose
   });
 
 const app = express();
-// const todosRoutes = require("./routes/todos");
+const todosRoutes = require("./routes/todos");
 app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:8080",
+    origin: "http://localhost:3001",
   })
 );
 
@@ -35,5 +35,5 @@ app.use("/ping", (req, res) => {
   res.status(200).send("PING OK");
 });
 // app.use("api/v1/todos", todosRoutes);
-
+app.use("/api/v1/todos", todosRoutes);
 module.exports = app;

@@ -1,5 +1,5 @@
 const Todo = require("../models/Todo");
-const { genericCtrl } = require("../helper/ctrlHelper");
+// const { genericCtrl } = require("../helper/ctrlHelper");
 const todoServices = require("../services/todosService");
 
 //contrôleur de la route GET /todos
@@ -11,3 +11,5 @@ exports.list = async (req, res) => {
     res.send(400).send(e);
   }
 };
+
+//controleur de la rouge POST /todos

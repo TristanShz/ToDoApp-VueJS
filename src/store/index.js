@@ -43,8 +43,8 @@ const store = new Vuex.Store({
     },
   },
   mutations: {
-    setStates(state, todos) {
-      state.todos = todos;
+    setStates(state, todo) {
+      state.todos.push(todo);
     },
     editTodo(state, todo) {
       todo.description = this.state.description;
@@ -74,8 +74,8 @@ const store = new Vuex.Store({
   },
 
   actions: {
-    setStates(context) {
-      context.commit("setStates", JSON.parse(localStorage.getItem("todos")));
+    setStates(context, todo) {
+      context.commit("setStates", todo);
     },
     editTodo(context, id) {
       context.commit("editTodo", this.getters.getTodoById(id));
