@@ -9,20 +9,15 @@ const verifyParams = require("../middleware/verifyParams");
 const todoCtrl = require("../controllers/todos");
 
 //route GET /api/v1/todos/
-router.get("/", todoCtrl.list);
-
-//route /todos/:id
-//le router executera la requête dans l'odre des middlewares,
-//pour finir avec le contrôleur de la requête
-// router.get("/:id", verifyParams, todoCtrl.getOneItem);
+router.get("/", todoCtrl.getTodos);
 
 //route POST /api/v1/todos/
-router.post("/", todoCtrl.add);
+router.post("/", todoCtrl.addTodo);
 
 //route DELETE /api/v1/todos/
-router.delete("/:id", todoCtrl.delete);
+router.delete("/:id", verifyParams, todoCtrl.deleteTodo);
 
 //route UPDATE /api/v1/todos/
-router.put("/:id", todoCtrl.update);
+router.put("/:id", verifyParams, todoCtrl.updateTodo);
 
 module.exports = router;
