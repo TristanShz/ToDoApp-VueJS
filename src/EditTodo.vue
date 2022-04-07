@@ -5,7 +5,7 @@
     >
       <h1 class="text-3xl text-gray-900 mb-8">Edit Todo</h1>
       <input
-        v-model="$store.state.description"
+        v-model="$store.state.descriptionModel"
         class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-gray-700 mb-8"
       />
       <router-link to="/todos"

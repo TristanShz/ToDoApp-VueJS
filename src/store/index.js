@@ -5,18 +5,18 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    todos: [],
+    todos: "",
     pageSize: 5,
     currentPage: 1,
-    description: "",
+    descriptionModel: "",
   },
   getters: {
     todoId(state) {
-      if (state.todos.length) return state.todos[0].id + 1;
+      if (state.todos.length) return state.todos[0]._id + 1;
       else return 1;
     },
     getTodoById: (state) => (id) => {
-      return state.todos.find((todo) => todo.id === id);
+      return state.todos.find((todo) => todo._id === id);
     },
     maxPage(state) {
       return Math.ceil(state.todos.length / state.pageSize);
@@ -43,8 +43,8 @@ const store = new Vuex.Store({
     },
   },
   mutations: {
-    setStates(state, todo) {
-      state.todos.push(todo);
+    setStates(state, todosList) {
+      state.todos = todosList.reverse();
     },
     editTodo(state, todo) {
       todo.description = this.state.description;
@@ -57,7 +57,7 @@ const store = new Vuex.Store({
 
     removeTodo(state, todo) {
       state.todos.splice(
-        state.todos.findIndex((findTodo) => findTodo.id === todo.id),
+        state.todos.findIndex((findTodo) => findTodo._id === todo._id),
         1
       );
     },
@@ -71,30 +71,52 @@ const store = new Vuex.Store({
       else if (page > state.maxPage) state.currentPage = state.maxPage;
       else state.currentPage = page;
     },
+
+    setDescriptionModel(state, todo) {
+      state.descriptionModel = todo.description;
+    },
   },
 
   actions: {
-    setStates(context, todo) {
-      context.commit("setStates", todo);
+    setStates(context, todosList) {
+      context.commit("setStates", todosList);
     },
-    editTodo(context, id) {
-      context.commit("editTodo", this.getters.getTodoById(id));
-      context.dispatch("saveTodo");
+    editTodo(context, todo) {
+      fetch(`http://localhost:3000/api/v1/todos/${id}`, {
+        method: "PUT",
+        mode: "cors",
+        cache: "default",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          description: todo.description,
+          done: todo.done,
+          _id: todo._id,
+        }),
+      });
     },
     addTodo(context, description) {
       if (description) {
-        context.commit("addTodo", {
-          id: this.getters.todoId,
-          done: false,
-          description: description,
+        fetch("http://localhost:3000/api/v1/todos", {
+          method: "POST",
+          mode: "cors",
+          cache: "default",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ description: description }),
         });
-
-        context.dispatch("saveTodo");
       }
+      context.commit("addTodo", {
+        description: description,
+        done: false,
+        id: "",
+      });
     },
     removeTodo(context, id) {
+      fetch(`http://localhost:3000/api/v1/todos/${id}`, {
+        method: "DELETE",
+        mode: "cors",
+        cache: "default",
+      });
       context.commit("removeTodo", this.getters.getTodoById(id));
-      context.dispatch("saveTodo");
     },
 
     doneTodo(context, id) {
@@ -105,13 +127,11 @@ const store = new Vuex.Store({
     saveTodo({ state }) {
       localStorage.setItem("todos", JSON.stringify(state.todos));
     },
-
-    getTodoById(context, id) {
-      context.commit("getTodoById", this.getters.getTodoById(id));
-    },
-
     setCurrentPage(context, page) {
       context.commit("setCurrentPage", page);
+    },
+    setDescriptionModel(context, id) {
+      context.commit("setDescriptionModel", this.getters.getTodoById(id));
     },
   },
 });

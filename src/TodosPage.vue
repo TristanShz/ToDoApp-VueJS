@@ -39,15 +39,16 @@ export default {
       mode: "cors",
       cache: "default",
     };
-    let newTodo = [];
+
     fetch("http://localhost:3000/api/v1/todos", myInit)
       .then(function (todosList) {
         return todosList.json();
       })
       .then((todosList) => {
-        newTodo = todosList;
-        this.$store.dispatch("setStates", todosList);
-        console.log(newTodo);
+        this.$store.dispatch(
+          "setStates",
+          JSON.parse(JSON.stringify(todosList))
+        );
       });
   },
 };
