@@ -16,6 +16,7 @@
           Edit
         </button></router-link
       >
+
       <button
         class="flex p-2 ml-4 mr-2 border-2 rounded hover:text-white"
         :class="[
@@ -26,6 +27,7 @@
         @click="
           () => {
             $store.dispatch('doneTodo', todo._id);
+            $store.dispatch('editTodo', todo._id);
           }
         "
       >
@@ -40,3 +42,9 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  updated() {},
+};
+</script>

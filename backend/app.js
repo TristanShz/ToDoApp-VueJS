@@ -31,9 +31,6 @@ app.use(
   })
 );
 
-app.use("/ping", (req, res) => {
-  res.status(200).send("PING OK");
-});
 // app.use("api/v1/todos", todosRoutes);
 app.use("/api/v1/todos", todosRoutes);
 

@@ -8,13 +8,10 @@ const store = new Vuex.Store({
     todos: "",
     pageSize: 5,
     currentPage: 1,
+    description: "",
     descriptionModel: "",
   },
   getters: {
-    todoId(state) {
-      if (state.todos.length) return state.todos[0]._id + 1;
-      else return 1;
-    },
     getTodoById: (state) => (id) => {
       return state.todos.find((todo) => todo._id === id);
     },
@@ -46,9 +43,10 @@ const store = new Vuex.Store({
     setStates(state, todosList) {
       state.todos = todosList.reverse();
     },
-    editTodo(state, todo) {
-      todo.description = this.state.description;
-      this.state.description = "";
+    editTodo(state, todoToEdit) {
+      if (state.descriptionModel)
+        todoToEdit.description = state.descriptionModel;
+      state.descriptionModel = "";
     },
     addTodo(state, newTodo) {
       state.todos.unshift(newTodo);
@@ -65,7 +63,6 @@ const store = new Vuex.Store({
     doneTodo(state, todo) {
       todo.done = !todo.done;
     },
-
     setCurrentPage(state, page) {
       if (page <= 0) state.currentPage = 1;
       else if (page > state.maxPage) state.currentPage = state.maxPage;
@@ -81,18 +78,25 @@ const store = new Vuex.Store({
     setStates(context, todosList) {
       context.commit("setStates", todosList);
     },
-    editTodo(context, todo) {
-      fetch(`http://localhost:3000/api/v1/todos/${id}`, {
+    editTodo(context, idToEdit) {
+      const todoToEdit = this.getters.getTodoById(idToEdit);
+      //Si c'est une modification de description, alors on la change, sinon
+      //on garde la même description (si c'est seulement une modification du state "done")
+      const newDescription = context.state.descriptionModel
+        ? context.state.descriptionModel
+        : todoToEdit.description;
+      fetch(`http://localhost:3000/api/v1/todos/${todoToEdit._id}`, {
         method: "PUT",
         mode: "cors",
         cache: "default",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          description: todo.description,
-          done: todo.done,
-          _id: todo._id,
+          description: newDescription,
+          done: todoToEdit.done,
         }),
       });
+
+      context.commit("editTodo", todoToEdit);
     },
     addTodo(context, description) {
       if (description) {
@@ -102,31 +106,32 @@ const store = new Vuex.Store({
           cache: "default",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ description: description }),
-        });
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((id) => {
+            context.commit("addTodo", {
+              description: description,
+              done: false,
+              _id: id,
+            });
+          });
       }
-      context.commit("addTodo", {
-        description: description,
-        done: false,
-        id: "",
-      });
     },
-    removeTodo(context, id) {
-      fetch(`http://localhost:3000/api/v1/todos/${id}`, {
+    removeTodo(context, idToRemove) {
+      fetch(`http://localhost:3000/api/v1/todos/${idToRemove}`, {
         method: "DELETE",
         mode: "cors",
         cache: "default",
       });
-      context.commit("removeTodo", this.getters.getTodoById(id));
+      context.commit("removeTodo", this.getters.getTodoById(idToRemove));
     },
 
-    doneTodo(context, id) {
-      context.commit("doneTodo", this.getters.getTodoById(id));
-      context.dispatch("saveTodo");
+    doneTodo(context, idToDone) {
+      context.commit("doneTodo", this.getters.getTodoById(idToDone));
     },
 
-    saveTodo({ state }) {
-      localStorage.setItem("todos", JSON.stringify(state.todos));
-    },
     setCurrentPage(context, page) {
       context.commit("setCurrentPage", page);
     },

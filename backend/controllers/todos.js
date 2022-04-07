@@ -22,14 +22,7 @@ exports.add = (req, res) => {
   todo
     .save()
     .then((result) => {
-      res.status(201).json({
-        message: "Created todo successfully",
-        createdProduct: {
-          description: result.description,
-          done: result.done,
-          _id: result._id,
-        },
-      });
+      res.status(201).json(result._id);
     })
     .catch((error) => res.status(400).json({ error }));
 };
@@ -43,7 +36,10 @@ exports.delete = (req, res) => {
 
 //contrôleur de la route PUT /api/v1/todos/
 exports.update = (req, res) => {
-  Todo.updateOne({ _id: req.params.id }, { description: req.body.description })
+  Todo.updateOne(
+    { _id: req.params.id },
+    { description: req.body.description, done: req.body.done }
+  )
     .then(() => res.status(200).json({ message: "Updated todo successfully" }))
     .catch((error) => res.status(400).json({ error }));
 };
