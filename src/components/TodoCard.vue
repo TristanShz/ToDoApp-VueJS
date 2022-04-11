@@ -8,9 +8,10 @@
       <p class="w-full text-gray-900" :class="{ 'line-through': todo.done }">
         {{ todo.description }}
       </p>
-      <p class="text-s text-pink-400 font-semibold">{{ todo.user }}</p>
+      <p class="text-s text-pink-700 font-semibold">{{ todo.user }}</p>
       <router-link :to="{ name: 'edit', params: { id: todo._id } }"
         ><button
+          v-if="todo.user == $store.state.isLogged.fullName"
           @click="$store.dispatch('setDescriptionModel', todo._id)"
           class="flex p-2 ml-2 border-2 rounded text-blue-500 border-blue-500 hover:text-white hover:bg-blue-500"
         >
@@ -34,6 +35,7 @@
         {{ todo.done ? "Fait" : "Pas fait" }}
       </button>
       <button
+        v-if="todo.user == $store.state.isLogged.fullName"
         class="flex p-2 ml-2 border-2 rounded text-red-500 border-red-500 hover:text-white hover:bg-red-500"
         @click="$store.dispatch('removeTodo', todo._id)"
       >

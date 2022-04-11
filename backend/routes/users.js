@@ -10,4 +10,8 @@ router.post("/register", verifyToken, userCtrl.addUser);
 
 //route POST /login
 router.post("/login", userCtrl.loginUser);
+
+//rouge GET /user 
+router.post("/user", userCtrl.getUserLoggedIn);
+
 module.exports = router;

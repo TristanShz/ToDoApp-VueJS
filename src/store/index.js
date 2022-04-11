@@ -74,8 +74,8 @@ const store = new Vuex.Store({
       state.descriptionModel = todo.description;
     },
 
-    setLogged(state, id) {
-      state.isLogged = id;
+    setUserLoggedIn(state, user) {
+      state.isLogged = user;
     },
   },
 
@@ -156,8 +156,8 @@ const store = new Vuex.Store({
     setDescriptionModel(context, id) {
       context.commit("setDescriptionModel", this.getters.getTodoById(id));
     },
-    setLogged(context, id) {
-      context.commit("setLogged", id);
+    setUserLoggedIn(context, user) {
+      context.commit("setUserLoggedIn", user);
     },
   },
 });

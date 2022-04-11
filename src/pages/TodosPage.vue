@@ -5,8 +5,11 @@
         <div
           class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg overflow-y-auto"
         >
-          <div class="mb-4">
+          <div class="mb-4 flex justify-between">
             <h1 class="text-3xl text-gray-900">Ma Todo</h1>
+            <h2 class="font-bold text-pink-700">
+              User : {{ $store.state.isLogged.fullName }}
+            </h2>
           </div>
           <todo-input />
           <todo-progressbar />
@@ -23,6 +26,7 @@ import TodoInput from "@/components/TodoInput.vue";
 import TodoPagination from "@/components/TodoPagination.vue";
 import TodoCard from "@/components/TodoCard.vue";
 import TodoProgressbar from "@/components/TodoProgressbar.vue";
+import axios from "axios";
 export default {
   name: "TodosPage",
   components: {
@@ -48,6 +52,17 @@ export default {
           "setStates",
           JSON.parse(JSON.stringify(todosList))
         );
+      });
+
+    axios
+      .post("http://localhost:3000/user", {
+        token: localStorage.getItem("token"),
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .then((user) => {
+        this.$store.dispatch("setUserLoggedIn", user);
       });
   },
 };

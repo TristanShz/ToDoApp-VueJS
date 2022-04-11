@@ -4,6 +4,15 @@ const userServices = require("../services/usersService");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
+exports.getUserLoggedIn = async (req, res) => {
+  const user = await User.findOne({ _id: jwt.decode(req.body.token).id });
+  if (user) {
+    console.log(user);
+    return res.status(200).json({ id: user._id, fullName: user.fullName });
+  } else {
+    return res.status(400);
+  }
+};
 exports.addUser = async (req, res) => {
   const password = await userServices.hashPassword(req.body.password);
   const user = new User({
