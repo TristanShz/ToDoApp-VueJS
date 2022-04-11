@@ -1,6 +1,8 @@
-import HomePage from "../HomePage";
-import TodosPages from "../TodosPage";
-import EditTodo from "../EditTodo";
+import HomePage from "../pages/HomePage";
+import TodosPages from "../pages/TodosPage";
+import EditTodo from "../pages/EditTodo";
+import RegisterPage from "../pages/RegisterPage";
+import LoginPage from "../pages/LoginPage";
 export default [
   {
     path: "/",
@@ -14,5 +16,13 @@ export default [
     path: "/edit/:id",
     component: EditTodo,
     name: "edit",
+  },
+  {
+    path: "/register",
+    component: RegisterPage,
+  },
+  {
+    path: "/login",
+    component: LoginPage,
   },
 ];

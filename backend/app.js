@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const user = process.env.MONGO_USER;
 const pass = process.env.MONGO_PASS;
 const cluster = process.env.MONGO_URL;
-const db = process.env.MONGO_DB;
+const db = process.env.MONGO_DB_TODOS;
 
 mongoose
   .connect("mongodb://" + cluster + "/" + db, {
@@ -33,5 +33,9 @@ app.use(
 
 // app.use("api/v1/todos", todosRoutes);
 app.use("/api/v1/todos", todosRoutes);
+
+const userRoutes = require("./routes/users");
+
+app.use("/register", userRoutes);
 
 module.exports = app;
