@@ -36,6 +36,7 @@ export default {
       method: "GET",
       mode: "cors",
       cache: "default",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     };
 
     fetch("http://localhost:3000/api/v1/todos", myInit)

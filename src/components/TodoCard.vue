@@ -8,6 +8,7 @@
       <p class="w-full text-gray-900" :class="{ 'line-through': todo.done }">
         {{ todo.description }}
       </p>
+      <p class="text-s text-pink-400 font-semibold">{{ todo.user }}</p>
       <router-link :to="{ name: 'edit', params: { id: todo._id } }"
         ><button
           @click="$store.dispatch('setDescriptionModel', todo._id)"
@@ -16,7 +17,6 @@
           Edit
         </button></router-link
       >
-
       <button
         class="flex p-2 ml-4 mr-2 border-2 rounded hover:text-white"
         :class="[

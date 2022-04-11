@@ -77,13 +77,24 @@ export default {
           password: this.password,
         })
         .then((result) => {
-          return result.data;
+          return {
+            isOk: true,
+            data: result.data.access_token,
+            id: result.data.id,
+          };
         })
         .catch((error) => {
-          return error.response.data;
+          return { isOk: false, data: error.response.data.message };
         });
-      console.log(JSON.stringify(isLogged.message));
-      this.errorMessage = JSON.stringify(isLogged.message);
+      if (!isLogged.isOk) {
+        this.errorMessage = isLogged.data;
+      } else {
+        console.log(isLogged.data);
+        localStorage.setItem("token", isLogged.data);
+        this.$store.dispatch("setLogged", isLogged.id);
+        console.log(isLogged.id);
+        location.href = "/todos";
+      }
     },
   },
 };

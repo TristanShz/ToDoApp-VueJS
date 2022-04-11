@@ -46,7 +46,7 @@ exports.loginUser = async (req, res) => {
       { expiresIn: "3 hours" }
     );
 
-    return res.json({ access_token: token });
+    return res.json({ access_token: token, id: user._id });
   } else {
     return res.status(400).json({ message: "Mauvais mot de passe" });
   }

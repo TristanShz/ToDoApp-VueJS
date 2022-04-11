@@ -10,6 +10,7 @@ const store = new Vuex.Store({
     currentPage: 1,
     description: "",
     descriptionModel: "",
+    isLogged: "",
   },
   getters: {
     getTodoById: (state) => (id) => {
@@ -72,6 +73,10 @@ const store = new Vuex.Store({
     setDescriptionModel(state, todo) {
       state.descriptionModel = todo.description;
     },
+
+    setLogged(state, id) {
+      state.isLogged = id;
+    },
   },
 
   actions: {
@@ -89,7 +94,10 @@ const store = new Vuex.Store({
         method: "PUT",
         mode: "cors",
         cache: "default",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         body: JSON.stringify({
           description: newDescription,
           done: todoToEdit.done,
@@ -104,8 +112,14 @@ const store = new Vuex.Store({
           method: "POST",
           mode: "cors",
           cache: "default",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ description: description }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            description: description,
+            token: localStorage.getItem("token"),
+          }),
         })
           .then((response) => {
             return response.json();
@@ -124,6 +138,10 @@ const store = new Vuex.Store({
         method: "DELETE",
         mode: "cors",
         cache: "default",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       context.commit("removeTodo", this.getters.getTodoById(idToRemove));
     },
@@ -137,6 +155,9 @@ const store = new Vuex.Store({
     },
     setDescriptionModel(context, id) {
       context.commit("setDescriptionModel", this.getters.getTodoById(id));
+    },
+    setLogged(context, id) {
+      context.commit("setLogged", id);
     },
   },
 });

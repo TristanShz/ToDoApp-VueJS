@@ -1,7 +1,8 @@
 const Todo = require("../models/Todo");
 // const { genericCtrl } = require("../helper/ctrlHelper");
 const todoServices = require("../services/todosService");
-
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 //contrôleur de la route GET /api/v1/todos/
 exports.getTodos = async (req, res) => {
   try {
@@ -13,8 +14,11 @@ exports.getTodos = async (req, res) => {
 };
 
 //controleur de la route POST /api/v1/todos/
-exports.addTodo = (req, res) => {
+exports.addTodo = async (req, res) => {
+  const user = await User.findOne({ _id: jwt.decode(req.body.token).id });
+  console.log(user);
   const todo = new Todo({
+    user: user.fullName,
     description: req.body.description,
     done: false,
   });
