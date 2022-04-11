@@ -81,6 +81,7 @@
 import Vue from "vue";
 import { VueReCaptcha } from "vue-recaptcha-v3";
 import axios from "axios";
+
 Vue.use(VueReCaptcha, {
   siteKey: "6Le7ilgfAAAAAORdWfoxeqRkH1emeH8LEqvGg9RF",
   loaderOptions: {

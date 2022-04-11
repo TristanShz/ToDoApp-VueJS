@@ -36,6 +36,6 @@ app.use("/api/v1/todos", todosRoutes);
 
 const userRoutes = require("./routes/users");
 
-app.use("/register", userRoutes);
+app.use(userRoutes);
 
 module.exports = app;

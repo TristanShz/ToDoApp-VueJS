@@ -5,27 +5,40 @@
         <p class="text-gray-600">Sign In</p>
         <h2 class="text-xl font-bold">Join our community</h2>
       </div>
-      <div>
-        <input
-          class="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600"
-          type="text"
-          placeholder="Email"
-        />
-      </div>
-      <div>
-        <input
-          class="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600"
-          type="text"
-          placeholder="Password"
-        />
-      </div>
-      <div>
-        <button
-          class="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded text-sm font-bold text-gray-50 transition duration-200"
+      <form @submit.prevent="checkLogin()">
+        <div>
+          <input
+            class="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600"
+            type="text"
+            placeholder="Email"
+            v-model="email"
+          />
+        </div>
+        <div>
+          <input
+            class="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600"
+            type="password"
+            placeholder="Password"
+            v-model="password"
+          />
+        </div>
+        <div
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-5 mb-5"
+          role="alert"
+          v-if="errorMessage"
         >
-          Sign In
-        </button>
-      </div>
+          <strong class="font-bold">Attention ! </strong>
+          <span class="block sm:inline">{{ errorMessage }}</span>
+        </div>
+        <div>
+          <button
+            type="submit"
+            class="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded text-sm font-bold text-gray-50 transition duration-200"
+          >
+            Sign In
+          </button>
+        </div>
+      </form>
       <div class="flex items-center justify-between">
         <div class="flex flex-row items-center">
           <input
@@ -46,6 +59,33 @@
   </section>
 </template>
 <script>
-export default {};
+import axios from "axios";
+export default {
+  data() {
+    return {
+      email: "",
+      password: "",
+      token: "",
+      errorMessage: "",
+    };
+  },
+  methods: {
+    async checkLogin() {
+      const isLogged = await axios
+        .post("http://localhost:3000/login", {
+          email: this.email,
+          password: this.password,
+        })
+        .then((result) => {
+          return result.data;
+        })
+        .catch((error) => {
+          return error.response.data;
+        });
+      console.log(JSON.stringify(isLogged.message));
+      this.errorMessage = JSON.stringify(isLogged.message);
+    },
+  },
+};
 </script>
 <style lang=""></style>
