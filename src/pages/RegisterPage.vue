@@ -18,12 +18,14 @@
             type="text"
             class="block border border-grey-light w-full p-3 rounded mb-4"
             name="email"
+            autocomplete
             placeholder="Email"
             v-model="email"
           />
 
           <input
             type="password"
+            autocomplete
             class="block border border-grey-light w-full p-3 rounded mb-4"
             name="password"
             placeholder="Password"
@@ -101,12 +103,14 @@ export default {
       // Execute reCAPTCHA with action "login".
       const token = await this.$recaptcha("login");
 
-      axios.post("http://localhost:3000/register", {
-        fullName: this.fullName,
-        email: this.email,
-        password: this.email,
-        token,
-      });
+      axios
+        .post("http://localhost:3000/register", {
+          fullName: this.fullName,
+          email: this.email,
+          password: this.password,
+          token,
+        })
+        .then((result) => console.log(result));
     },
   },
 };
